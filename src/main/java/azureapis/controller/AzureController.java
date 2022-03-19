@@ -6,14 +6,19 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import azureapis.model.AzureModel;
+import azureapis.model.WebAppForm;
 import azureapis.repository.AzureRepository;
+import azureapis.repository.WebappformRepository;
 
 @CrossOrigin
 @RestController
@@ -21,6 +26,11 @@ public class AzureController {
 
 	@Autowired
 	private AzureRepository userRoleRepository;
+	
+	@Autowired
+	private WebappformRepository webAppFormRepository;
+	
+	
 
 	@RequestMapping(value = "test", method = RequestMethod.GET)
 	public String test() {
@@ -100,7 +110,7 @@ public class AzureController {
 	// delete data
 	@PostMapping("/deletedata")
 	public Map<String, String> deleteData(@RequestParam HashMap<String, Object> formData) {
-		
+
 		HashMap<String, String> map = new HashMap<>();
 		if (null != userRoleRepository.findByName(formData.get("name").toString())) {
 			map.put("status", "200");
@@ -116,4 +126,22 @@ public class AzureController {
 		return map;
 	}
 
+	// get all userrole
+	@GetMapping("/api/WebAppForm")
+	public List<WebAppForm> getAllWebAppForm() {
+		List<WebAppForm> list = (List<WebAppForm>) this.webAppFormRepository.findAll();
+		return list;
+	}
+
+	// create userrole
+	@PostMapping("/api/WebAppForm")
+	public WebAppForm createWebAppForm(@RequestBody WebAppForm webAppForm) {
+		return webAppFormRepository.save(webAppForm);
+	}
+	
+	// delete userrole
+	@DeleteMapping("/api/WebAppForm")
+	public void deleteWebAppForm() {
+		webAppFormRepository.deleteAll();
+	}
 }
